@@ -1,4 +1,5 @@
 ﻿using Poker.Core.Models.Enum;
+using Poker.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,20 +9,24 @@ namespace Poker.Core.Models
     public class Deck
     {
         public Card[] listCards { get; set; } = Array.Empty<Card>();
+        public Deck()
+        {
+            listCards = SetDeckWithCards();            
+        }
 
-        public static Card[] ShuffleCards(Card[] deck)
+        public Card[] ShuffleCards()
         {
             const int StartOfArray = 0;
-            int EndOfArray = deck.Length;
+            int EndOfArray = listCards.Length;
 
             Random rnd = new Random();
 
             bool cardInserted = true;
             int newPosition;
 
-            Card[] newDeck = new Card[deck.Length];
+            Card[] newDeck = new Card[listCards.Length];
 
-            foreach (Card card in deck)
+            foreach (Card card in listCards)
             {
                 do
                 {
@@ -38,16 +43,8 @@ namespace Poker.Core.Models
 
                 } while (!cardInserted);
             }
-            deck = newDeck;
-            return deck;
-        }
-        public void ShowCardsInDeck()
-        {
-            foreach (Card card in listCards)
-            {
-                Console.WriteLine($"My card is: {card.Num} of {card.Symbol}");
-            }
-            Console.WriteLine("End of deck");
+            listCards = newDeck;
+            return listCards;
         }
 
         public static Card[] SetDeckWithCards()
@@ -86,6 +83,24 @@ namespace Poker.Core.Models
 
             }
             return deck;
+        }
+        public void ShowHandCard()
+        {
+            List<string[]> allCardsLines = new List<string[]>();
+
+            for (int i = 0; i < 5; i++)
+            {
+                allCardsLines.Add(CardUI.GetCardUI(listCards[i]));
+            }
+
+            for (int row = 0; row < 7; row++)
+            {
+                for (int cardId = 0; cardId < 5; cardId++)
+                {
+                    Console.Write(allCardsLines[cardId][row]);
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
