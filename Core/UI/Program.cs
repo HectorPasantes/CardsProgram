@@ -32,7 +32,8 @@ public class Program
             }
             else if (selectedOption == "x")
             {
-                roundEnded = true;
+                deck.DiscardCards(board, deck);
+                selectedHand.listCards.Clear();
             }
             else
             {

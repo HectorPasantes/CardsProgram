@@ -42,6 +42,7 @@ namespace Poker.Core.Models
             listCards = newDeck.ToList();
             return listCards;
         }
+        private int DiscardCount = 0;
 
         public List<Card> SetDeckWithCards()
         {
@@ -80,9 +81,9 @@ namespace Poker.Core.Models
         }
         public void ShowHandCard()
         {
+            allCardsSprite.Clear();
             for (int i = 0; i < 8; i++)
-            {
-                allCardsSprite.Clear();
+            {                
                 allCardsSprite.Add(CardUI.GetCardUI(listCards[i]));
             }
 
@@ -127,5 +128,26 @@ namespace Poker.Core.Models
                 }
             }
         }        
+        public void DiscardCards(ScoreBoard board, Deck deck)
+        {
+            List<Card> notSelected = listCards.Where(a => !a.SelectedState).ToList();
+            List<Card> selected = listCards.Where(a => a.SelectedState).ToList();
+
+            foreach (var card in selected)
+            {
+                card.SelectedState = false;
+                DiscardCount++;
+            }
+
+            notSelected.AddRange(selected);
+            listCards = notSelected;
+
+            board.Discards--;
+
+            if(DiscardCount >= 48)
+            {
+                deck.ShuffleCards();
+            }
+        }
     }
 }
