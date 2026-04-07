@@ -8,23 +8,19 @@ namespace Poker.Core.Models
 {
     public class Deck
     {
-        public Card[] listCards { get; set; } = Array.Empty<Card>();
-        public Deck()
-        {
-            listCards = SetDeckWithCards();            
-        }
-
-        public Card[] ShuffleCards()
+        public List<Card> listCards { get; set; } = new List<Card>();
+        public List<List<string>> allCardsSprite { get; set; } = new List<List<string>>();
+        public List<Card> ShuffleCards()
         {
             const int StartOfArray = 0;
-            int EndOfArray = listCards.Length;
+            int EndOfArray = listCards.Count;
 
             Random rnd = new Random();
 
             bool cardInserted = true;
             int newPosition;
 
-            Card[] newDeck = new Card[listCards.Length];
+            Card[] newDeck = new Card[listCards.Count];
 
             foreach (Card card in listCards)
             {
@@ -43,11 +39,11 @@ namespace Poker.Core.Models
 
                 } while (!cardInserted);
             }
-            listCards = newDeck;
+            listCards = newDeck.ToList();
             return listCards;
         }
 
-        public static Card[] SetDeckWithCards()
+        public List<Card> SetDeckWithCards()
         {
             const int minNum = 1, maxNum = 13, minSymbol = 1, maxSymbol = 5;
 
@@ -57,7 +53,6 @@ namespace Poker.Core.Models
             bool correctCard;
 
             Card[] deck = new Card[(maxNum - 1) * (maxSymbol - 1)];
-
 
             deck[0] = new Card(Symbols.Heart, 1);
             for (int i = 1; i < deck.Length; i++)
@@ -78,29 +73,59 @@ namespace Poker.Core.Models
 
                 } while (!correctCard);
 
-                deck[i] = new Card(Card.GetTypeCard(randSymbol), num);
-
-
+                deck[i] = new Card(Card.GetTypeCard(randSymbol), num);                
             }
-            return deck;
+            List<Card> recreatedList = deck.ToList();
+            return recreatedList;
         }
         public void ShowHandCard()
         {
-            List<string[]> allCardsLines = new List<string[]>();
-
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 8; i++)
             {
-                allCardsLines.Add(CardUI.GetCardUI(listCards[i]));
+                allCardsSprite.Clear();
+                allCardsSprite.Add(CardUI.GetCardUI(listCards[i]));
             }
 
             for (int row = 0; row < 7; row++)
             {
-                for (int cardId = 0; cardId < 5; cardId++)
+                for (int cardId = 0; cardId < 8; cardId++)
                 {
-                    Console.Write(allCardsLines[cardId][row]);
+                    if (listCards[cardId].SelectedState)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write(allCardsSprite[cardId][row]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write(allCardsSprite[cardId][row]);
+                    }
                 }
                 Console.WriteLine();
             }
         }
+        public void ChangeCardState(int num, List<Card> deck)
+        {
+            Card card = listCards[num - 1];
+
+            if (card.SelectedState)
+            {
+                card.SelectedState = false;
+                deck.Remove(card);
+            }
+            else
+            {
+                if (deck.Count < 5)
+                {
+                    card.SelectedState = true;
+                    deck.Add(card);
+                }
+                else
+                {
+                    Console.WriteLine("You can only select 5 cards");
+                    Thread.Sleep(1500);
+                }
+            }
+        }        
     }
 }

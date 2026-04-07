@@ -8,7 +8,7 @@ namespace Poker.Core.UI
 {
     public static class CardUI
     {
-        public static string[] GetCardUI(Card card)
+        public static List<string> GetCardUI(Card card)
         {
             string numStr = card.Num.ToString();
             string topNum = card.Num < 10 ? numStr + " " : numStr;
@@ -44,6 +44,6 @@ namespace Poker.Core.UI
                 $" |     {botNum}| ",
                 " '-------' "
             ];
-        }
+        }        
     }
 }

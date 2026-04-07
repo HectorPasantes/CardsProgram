@@ -7,6 +7,7 @@ namespace Poker.Core.Models
 {
     public class Card
     {
+        public bool SelectedState { get; set; } = false;
         public Symbols Symbol { get; set; }
         public int Num { get; set; }
         public Card(Symbols symbol, int num)
